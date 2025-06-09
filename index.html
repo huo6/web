@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>软件资源库 - 搜索与下载</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f8ff 0%, #e9edf9 100%);
+            color: #333;
+            padding: 20px;
+            min-height: 100vh;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .logo {
+            color: #2c6fd1;
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .logo span {
+            color: #333;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: #5a7bc0;
+            font-size: 17px;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.05);
+        }
+
+        .search-container {
+            background: linear-gradient(to right, #ffffff, #f8faff);
+            padding: 32px 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(41, 88, 185, 0.12);
+            margin-bottom: 25px;
+            transition: all 0.4s ease;
+            border: 1px solid #e0e8ff;
+        }
+
+        .search-container:hover {
+            box-shadow: 0 15px 35px rgba(41, 88, 185, 0.18);
+            transform: translateY(-2px);
+        }
+
+        .search-box {
+            display: flex;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(41, 88, 185, 0.2);
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 18px 26px;
+            font-size: 17px;
+            border: none;
+            outline: none;
+            background: #fff;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            box-shadow: inset 0 0 0 2px #4a7bff;
+        }
+
+        .search-input::placeholder {
+            color: #8a9bc7;
+            font-weight: 500;
+        }
+
+        .search-button {
+            padding: 0 38px;
+            background: linear-gradient(135deg, #3a75e0 0%, #2a5bc7 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 17px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-button:hover {
+            background: linear-gradient(135deg, #2a5bc7 0%, #1a4bb7 100%);
+        }
+
+        .main-content {
+            display: flex;
+            gap: 25px;
+            margin-top: 15px;
+        }
+
+        .category-nav {
+            flex: 0 0 240px;
+            background: linear-gradient(to bottom, #ffffff, #fafbff);
+            border-radius: 14px;
+            padding: 15px 0;
+            box-shadow: 0 5px 20px rgba(41, 88, 185, 0.1);
+            height: fit-content;
+            border: 1px solid #e0e8ff;
+        }
+
+        .category-header {
+            padding: 15px 24px 10px;
+            font-size: 19px;
+            font-weight: 700;
+            color: #2c6fd1;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .category-item {
+            padding: 14px 26px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            color: #4a556d;
+            font-weight: 500;
+            border-left: 4px solid transparent;
+        }
+
+        .category-item i {
+            width: 28px;
+            font-size: 18px;
+            color: #6787d4;
+            transition: all 0.3s ease;
+        }
+
+        .category-item:hover {
+            background: #f0f5ff;
+            color: #2c6fd1;
+        }
+
+        .category-item.active {
+            background: linear-gradient(to right, #eef5ff, #f0f7ff);
+            color: #2c6fd1;
+            font-weight: 600;
+            border-left: 4px solid #2c6fd1;
+        }
+
+        .category-item.active i {
+            color: #2c6fd1;
+        }
+
+        .software-section {
+            flex: 1;
+            background: linear-gradient(to bottom, #ffffff, #fafbff);
+            border-radius: 14px;
+            padding: 32px 28px;
+            box-shadow: 0 5px 20px rgba(41, 88, 185, 0.1);
+            min-height: 600px;
+            border: 1px solid #e0e8ff;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid #e8edff;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c2f3c;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title i {
+            color: #2c6fd1;
+        }
+
+        .results-count {
+            color: #5a7bc0;
+            font-size: 16px;
+            font-weight: 500;
+            background: #eef5ff;
+            padding: 6px 14px;
+            border-radius: 20px;
+        }
+
+        .software-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px;
+        }
+
+        .software-card {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #dfe7ff;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            background: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .software-card:hover {
+            border-color: #a0b9ff;
+            box-shadow: 0 10px 25px rgba(41, 88, 185, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .software-card:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.04"><rect x="0" y="0" width="40" height="40" fill="%232c6fd1" /></svg>');
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .software-card:hover:after {
+            opacity: 1;
+        }
+
+        .software-icon {
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, #e4efff 0%, #d0e1ff 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 18px;
+            color: #2c6fd1;
+            font-weight: bold;
+            font-size: 20px;
+            box-shadow: 0 4px 10px rgba(44, 111, 209, 0.2);
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .software-info {
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        .software-name {
+            font-weight: 700;
+            font-size: 17px;
+            margin-bottom: 6px;
+            color: #2c2f3c;
+            letter-spacing: -0.2px;
+        }
+
+        .software-category {
+            font-size: 14px;
+            color: #5a75b0;
+            font-weight: 500;
+        }
+
+        .software-meta {
+            display: flex;
+            font-size: 12px;
+            margin-top: 10px;
+            gap: 10px;
+        }
+
+        .software-version {
+            color: #2a4db3;
+            background: #e4efff;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .software-size {
+            color: #777;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: #f5f7ff;
+        }
+
+        .software-arrow {
+            color: #a0b4e5;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            margin-left: 5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .software-card:hover .software-arrow {
+            color: #2c6fd1;
+            transform: translateX(5px);
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+            border-radius: 12px;
+            background: linear-gradient(to bottom, #f8faff, #f3f6ff);
+            border: 1px dashed #c4d2ff;
+        }
+
+        .no-results i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            color: #d0ddfa;
+        }
+
+        .no-results h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            color: #3a5bc0;
+        }
+
+        .no-results p {
+            font-size: 16px;
+            max-width: 500px;
+            margin: 0 auto;
+            color: #6c83c5;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            color: #6c83c5;
+            font-size: 15px;
+            border-top: 1px solid #dfe7ff;
+        }
+
+        /* 下载模态框样式 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: linear-gradient(to bottom right, #ffffff, #f8faff);
+            width: 90%;
+            max-width: 500px;
+            border-radius: 18px;
+            padding: 35px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            border: 1px solid #dfe7ff;
+            position: relative;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c2f3c;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modal-title i {
+            color: #2c6fd1;
+            background: #e4efff;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-modal {
+            background: #f0f4ff;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 20px;
+            color: #6c83c5;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-modal:hover {
+            background: #e4edff;
+            color: #2c6fd1;
+            transform: rotate(90deg);
+        }
+
+        .link-container {
+            margin-bottom: 25px;
+        }
+
+        .download-info {
+            font-size: 16px;
+            color: #5a75b0;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8faff;
+            border-radius: 10px;
+            border: 1px solid #e4edff;
+        }
+
+        .download-info b {
+            color: #2c2f3c;
+        }
+
+        .link-box {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        #downloadLink {
+            flex: 1;
+            padding: 16px 20px;
+            font-size: 16px;
+            border: 1px solid #c4d2ff;
+            border-radius: 10px 0 0 10px;
+            background: #f8faff;
+            color: #2c2f3c;
+        }
+
+        .copy-button {
+            padding: 0 28px;
+            background: linear-gradient(135deg, #2c6fd1 0%, #1a4bb7 100%);
+            color: white;
+            border: none;
+            border-radius: 0 10px 10px 0;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .copy-button:hover {
+            background: linear-gradient(135deg, #1a4bb7 0%, #1039a1 100%);
+        }
+
+        .link-notes {
+            font-size: 14px;
+            color: #8a9bc7;
+            margin-top: 10px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .help-button {
+            flex: 1;
+            padding: 15px;
+            background: #f0f4ff;
+            border: 1px solid #e0e8ff;
+            border-radius: 10px;
+            font-weight: 600;
+            color: #5a7bc0;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .help-button:hover {
+            background: #e4edff;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .category-nav {
+                width: 100%;
+                flex: none;
+            }
+            
+            .search-box {
+                flex-direction: column;
+                max-width: 100%;
+                box-shadow: none;
+            }
+            
+            .search-input {
+                border-radius: 10px 10px 0 0;
+                box-shadow: 0 4px 10px rgba(41, 88, 185, 0.1);
+            }
+            
+            .search-button {
+                padding: 16px;
+                border-radius: 0 0 10px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-box-open"></i> 
+            <div>软件<span>资源库</span></div>
+        </div>
+        <p class="subtitle">高效安全的设计、开发及创意软件资源平台 | 正版激活·一键安装·免费下载</p>
+    </div>
+    
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" id="searchInput" class="search-input" placeholder="输入软件名称，例如：ps2024、cad2025、ae等" autocomplete="off">
+            <button id="searchButton" class="search-button">
+                <i class="fas fa-search"></i> 搜索
+            </button>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <nav class="category-nav">
+            <div class="category-header">
+                <i class="fas fa-folder-open"></i> 软件分类
+            </div>
+            <div class="category-item" data-category="adobe">
+                <i class="fab fa-adobe"></i> Adobe
+            </div>
+            <div class="category-item" data-category="adobe-mac">
+                <i class="fab fa-apple"></i> Adobe - MAC
+            </div>
+            <div class="category-item" data-category="office">
+                <i class="fas fa-laptop"></i> 电脑办公
+            </div>
+            <div class="category-item" data-category="essential">
+                <i class="fas fa-star"></i> 常用精选
+            </div>
+            <div class="category-item active" data-category="animation">
+                <i class="fas fa-cube"></i> 三维动画
+            </div>
+            <div class="category-item" data-category="video">
+                <i class="fas fa-video"></i> 视频后期
+            </div>
+            <div class="category-item" data-category="architecture">
+                <i class="fas fa-building"></i> 建筑设计
+            </div>
+            <div class="category-item" data-category="engineering">
+                <i class="fas fa-industry"></i> 工业工程
+            </div>
+            <div class="category-item" data-category="data">
+                <i class="fas fa-chart-bar"></i> 数据分析
+            </div>
+            <div class="category-item" data-category="circuit">
+                <i class="fas fa-microchip"></i> 电子电路
+            </div>
+            <div class="category-item" data-category="development">
+                <i class="fas fa-code"></i> 编程开发
+            </div>
+            <div class="category-item" data-category="other">
+                <i class="fas fa-ellipsis-h"></i> 其他
+            </div>
+        </nav>
+        
+        <section class="software-section">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-cubes"></i> 三维动画软件</h2>
+                <div class="results-count">共 <span id="resultCount">5</span> 个软件</div>
+            </div>
+            <div class="software-grid" id="softwareGrid">
+                <!-- 软件卡片通过JavaScript动态生成 -->
+            </div>
+        </section>
+    </div>
+    
+    <!-- 下载链接模态框 -->
+    <div class="modal-overlay" id="downloadModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fas fa-download"></i>
+                    <span>下载链接</span>
+                </div>
+                <button class="close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="download-info">
+                <p>您选择的软件：<b id="modalSoftwareName">软件名称</b></p>
+                <p>资源大小：<b id="modalSoftwareSize">0 MB</b> | 当前版本：<b id="modalSoftwareVersion">1.0.0</b></p>
+            </div>
+            
+            <div class="link-container">
+                <div class="link-box">
+                    <input type="text" id="downloadLink" readonly>
+                    <button class="copy-button" id="copyButton">
+                        <i class="fas fa-copy"></i> 复制
+                    </button>
+                </div>
+                <p class="link-notes">* 此链接24小时内有效 | 下载完成后请校验文件完整性</p>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="help-button">
+                    <i class="fas fa-question-circle"></i> 安装指南
+                </button>
+                <button class="help-button">
+                    <i class="fas fa-key"></i> 激活教程
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>© 2023 软件资源库 | 专注于安全、高效的行业软件分享 | 本平台仅供学习参考</p>
+    </div>
+
+    <script>
+        // 软件数据模拟
+        const softwareData = {
+            'animation': [
+                { name: '3DMAX', company: 'Autodesk', icon: '3D', version: '2025', size: '7.8 GB', category: '三维动画' },
+                { name: 'Cinema4D', company: 'Maxon', icon: 'C4D', version: '2025', size: '4.2 GB', category: '三维动画' },
+                { name: 'Maya', company: 'Autodesk', icon: 'MA', version: '2025', size: '6.5 GB', category: '三维动画' },
+                { name: 'Blender', company: '开源软件', icon: 'BL', version: '4.0', size: '1.3 GB', category: '三维动画' },
+                { name: 'Rhino', company: 'Robert McNeel', icon: 'RH', version: '8.0', size: '1.8 GB', category: '三维动画' },
+                { name: 'ZBrush', company: 'Pixologic', icon: 'ZB', version: '2025', size: '3.5 GB', category: '三维动画' },
+                { name: 'Houdini', company: 'SideFX', icon: 'HO', version: '20.0', size: '5.1 GB', category: '三维动画' }
+            ],
+            'video': [
+                { name: 'Premiere Pro', company: 'Adobe', icon: 'PR', version: '2025', size: '3.7 GB', category: '视频后期' },
+                { name: 'After Effects', company: 'Adobe', icon: 'AE', version: '2025', size: '5.2 GB', category: '视频后期' },
+                { name: 'DaVinci Resolve', company: 'Blackmagic Design', icon: 'DR', version: '18.5', size: '6.3 GB', category: '视频后期' },
+                { name: 'Final Cut Pro', company: 'Apple', icon: 'FC', version: '10.6', size: '4.9 GB', category: '视频后期' }
+            ],
+            'adobe': [
+                { name: 'Photoshop', company: 'Adobe', icon: 'PS', version: '2025', size: '4.2 GB', category: 'Adobe' },
+                { name: 'Illustrator', company: 'Adobe', icon: 'AI', version: '2025', size: '3.1 GB', category: 'Adobe' },
+                { name: 'InDesign', company: 'Adobe', icon: 'ID', version: '2025', size: '2.8 GB', category: 'Adobe' }
+            ],
+            'office': [
+                { name: 'Microsoft Office', company: 'Microsoft', icon: 'OF', version: '2024', size: '5.8 GB', category: '电脑办公' },
+                { name: 'WPS Office', company: '金山办公', icon: 'WP', version: '2024', size: '450 MB', category: '电脑办公' },
+                { name: 'Adobe Acrobat', company: 'Adobe', icon: 'AC', version: '2025', size: '2.3 GB', category: '电脑办公' }
+            ],
+            'development': [
+                { name: 'Visual Studio', company: 'Microsoft', icon: 'VS', version: '2024', size: '8.2 GB', category: '编程开发' },
+                { name: 'PyCharm', company: 'JetBrains', icon: 'PY', version: '2024', size: '1.2 GB', category: '编程开发' },
+                { name: 'WebStorm', company: 'JetBrains', icon: 'WS', version: '2024', size: '980 MB', category: '编程开发' }
+            ]
+        };
+
+        // 当前激活的分类
+        let activeCategory = 'animation';
+        
+        // 获取DOM元素
+        const categoryItems = document.querySelectorAll('.category-item');
+        const softwareGrid = document.getElementById('softwareGrid');
+        const resultCount = document.getElementById('resultCount');
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const sectionTitle = document.querySelector('.section-title');
+        const downloadModal = document.getElementById('downloadModal');
+        const downloadLink = document.getElementById('downloadLink');
+        const modalSoftwareName = document.getElementById('modalSoftwareName');
+        const modalSoftwareSize = document.getElementById('modalSoftwareSize');
+        const modalSoftwareVersion = document.getElementById('modalSoftwareVersion');
+        const copyButton = document.getElementById('copyButton');
+        const closeModalButtons = document.querySelectorAll('.close-modal, .help-button');
+
+        // 渲染软件列表函数
+        function renderSoftwareList(category, searchTerm = '') {
+            // 更新页面标题
+            sectionTitle.innerHTML = `<i class="fas fa-cubes"></i> ${getCategoryName(category)}软件`;
+            
+            // 清空当前列表
+            softwareGrid.innerHTML = '';
+            
+            // 获取当前分类的软件数据
+            const softwareList = softwareData[category] || [];
+            
+            // 过滤搜索结果（如果有）
+            let filteredList = softwareList;
+            if (searchTerm) {
+                const term = searchTerm.toLowerCase();
+                filteredList = softwareList.filter(software => 
+                    software.name.toLowerCase().includes(term) || 
+                    software.company.toLowerCase().includes(term) ||
+                    software.category.toLowerCase().includes(term)
+                );
+            }
+            
+            // 更新结果数量
+            resultCount.textContent = filteredList.length;
+            
+            // 如果没有搜索结果
+            if (filteredList.length === 0) {
+                softwareGrid.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        <h3>没有找到匹配的软件</h3>
+                        <p>请尝试其他关键词或查看其他分类下的软件资源</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 渲染软件卡片
+            filteredList.forEach(software => {
+                const softwareCard = document.createElement('div');
+                softwareCard.className = 'software-card';
+                softwareCard.dataset.name = software.name;
+                softwareCard.dataset.version = software.version;
+                softwareCard.dataset.size = software.size;
+                
+                softwareCard.innerHTML = `
+                    <div class="software-icon">${software.icon}</div>
+                    <div class="software-info">
+                        <div class="software-name">${software.name}</div>
+                        <div class="software-category">${software.company}</div>
+                        <div class="software-meta">
+                            <span class="software-version">${software.version}</span>
+                            <span class="software-size">${software.size}</span>
+                        </div>
+                    </div>
+                    <div class="software-arrow"><i class="fas fa-chevron-right"></i></div>
+                `;
+                
+                // 添加点击事件
+                softwareCard.addEventListener('click', () => {
+                    openDownloadModal(software);
+                });
+                
+                softwareGrid.appendChild(softwareCard);
+            });
+        }
+        
+        // 获取分类名称的中文
+        function getCategoryName(categoryKey) {
+            const map = {
+                'animation': '三维动画',
+                'video': '视频后期',
+                'adobe': 'Adobe',
+                'office': '电脑办公',
+                'development': '编程开发'
+            };
+            return map[categoryKey] || categoryKey;
+        }
+        
+        // 为分类菜单项添加点击事件
+        categoryItems.forEach(item => {
+            item.addEventListener('click', function() {
+                // 移除所有项目的active类
+                categoryItems.forEach(item => item.classList.remove('active'));
+                
+                // 为当前项目添加active类
+                this.classList.add('active');
+                
+                // 更新当前激活分类
+                activeCategory = this.getAttribute('data-category');
+                
+                // 重新渲染软件列表
+                renderSoftwareList(activeCategory, searchInput.value);
+            });
+        });
+        
+        // 搜索按钮事件监听
+        searchButton.addEventListener('click', function() {
+            renderSoftwareList(activeCategory, searchInput.value);
+        });
+        
+        // 监听输入框的Enter键
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                renderSoftwareList(activeCategory, searchInput.value);
+            }
+        });
+        
+        // 打开下载模态框
+        function openDownloadModal(software) {
+            modalSoftwareName.textContent = software.name;
+            modalSoftwareVersion.textContent = software.version;
+            modalSoftwareSize.textContent = software.size;
+            
+            // 生成随机下载链接（在实际应用中应使用实际下载地址）
+            const randomCode = Math.random().toString(36).substring(2, 10).toUpperCase();
+            downloadLink.value = `https://download.softlibrary.com/${software.name.toLowerCase()}_${software.version}_${randomCode}.zip`;
+            
+            // 显示模态框
+            downloadModal.classList.add('active');
+            downloadModal.style.display = 'flex';
+            
+            // 禁用滚动
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // 复制下载链接
+        copyButton.addEventListener('click', function() {
+            downloadLink.select();
+            document.execCommand('copy');
+            
+            // 改变按钮状态提示用户
+            const originalText = copyButton.innerHTML;
+            copyButton.innerHTML = '<i class="fas fa-check"></i> 已复制';
+            
+            setTimeout(() => {
+                copyButton.innerHTML = originalText;
+            }, 2000);
+        });
+        
+        // 关闭模态框
+        closeModalButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                downloadModal.classList.remove('active');
+                
+                setTimeout(() => {
+                    downloadModal.style.display = 'none';
+                    document.body.style.overflow = '';
+                }, 300);
+            });
+        });
+        
+        // 点击模态框外部关闭
+        downloadModal.addEventListener('click', function(e) {
+            if (e.target === downloadModal) {
+                downloadModal.classList.remove('active');
+                
+                setTimeout(() => {
+                    downloadModal.style.display = 'none';
+                    document.body.style.overflow = '';
+                }, 300);
+            }
+        });
+        
+        // 初始渲染三维动画软件
+        renderSoftwareList(activeCategory);
+    </script>
+</body>
+</html>
